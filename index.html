@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Virtual Lab: Hukum Ohm</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        input[type="number"] { width: 100px; }
+        #chart { max-width: 600px; }
+        button { margin: 10px; padding: 10px; }
+    </style>
+</head>
+<body>
+    <h1>Simulasi Hukum Ohm: V = I * R</h1>
+    <p>Masukkan nilai tegangan (V) dan resistansi (R). Arus (I) akan dihitung otomatis.</p>
+    
+    <label>Tegangan (V): <input type="number" id="voltage" min="0" step="0.1" value="5"></label> V<br>
+    
+    <label>Resistansi (R): <input type="number" id="resistance" min="0.1" step="0.1" value="2"></label> Ω<br>
+    
+    <p>Arus (I): <span id="current">2.5</span> A</p>
+    
+    <canvas id="chart"></canvas>
+    
+    <button id="challengeBtn">Mode Tantangan (5 Soal Acak)</button>
+    <div id="challenge"></div>
+    
+    <script>
+        const voltageInput = document.getElementById('voltage');
+        const resistanceInput = document.getElementById('resistance');
+        const currentDisplay = document.getElementById('current');
+        const challengeBtn = document.getElementById('challengeBtn');
+        const challengeDiv = document.getElementById('challenge');
+        
+        let chart;
+        
+        function updateSimulation() {
+            const V = parseFloat(voltageInput.value) || 0;
+            const R = parseFloat(resistanceInput.value) || 0.1;
+            const I = V / R;
+            
+            currentDisplay.textContent = I.toFixed(2);
+            
+            updateChart(V, R);
+        }
+        
+        function updateChart(V, R) {
+            const dataPoints = [];
+            for (let v = 0; v <= 10; v += 0.5) {
+                dataPoints.push({ x: v, y: v / R });
+            }
+            
+            if (chart) chart.destroy();
+            chart = new Chart(document.getElementById('chart'), {
+                type: 'line',
+                data: {
+                    datasets: [{
+                        label: 'I vs V (untuk R = ' + R.toFixed(1) + ' Ω)',
+                        data: dataPoints,
+                        borderColor: 'blue',
+                        fill: false
+                    }]
+                },
+                options: {
+                    scales: {
+                        x: { title: { display: true, text: 'Tegangan (V)' } },
+                        y: { title: { display: true, text: 'Arus (I)' } }
+                    }
+                }
+            });
+        }
+        
+        voltageInput.addEventListener('input', updateSimulation);
+        resistanceInput.addEventListener('input', updateSimulation);
+        
+        updateSimulation();
+        
+        challengeBtn.addEventListener('click', () => {
+            const questions = [];
+            for (let i = 0; i < 5; i++) {
+                const V = Math.random() * 10;
+                const R = Math.random() * 10 + 1;
+                const I = V / R;
+                questions.push(`Soal ${i+1}: Jika V = ${V.toFixed(1)} V dan R = ${R.toFixed(1)} Ω, berapa I? (Jawaban: ${I.toFixed(2)} A)`);
+            }
+            challengeDiv.innerHTML = questions.join('<br>');
+        });
+    </script>
+</body>
+</html>
