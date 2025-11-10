@@ -3,28 +3,227 @@
 <head>
     <meta charset="UTF-8">
     <title>Virtual Lab: Hukum Ohm</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        body { font-family: Arial, sans-serif; margin: 20px; }
-        input[type="number"] { width: 100px; }
-        #chart { max-width: 600px; }
-        button { margin: 10px; padding: 10px; }
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap');
+
+        body {
+            font-family: 'Orbitron', monospace;
+            margin: 0;
+            padding: 0;
+            background: radial-gradient(circle, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%);
+            color: #e0e0e0;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 40px;
+            position: relative;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        h1 {
+            font-size: 3em;
+            color: #00d4ff;
+            text-shadow: 0 0 20px #00d4ff, 0 0 40px #00d4ff;
+            animation: glow 2s ease-in-out infinite alternate;
+            margin: 0;
+        }
+        .subtitle {
+            font-size: 1.2em;
+            color: #a0a0a0;
+            margin-top: 10px;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 30px;
+            align-items: start;
+        }
+        .controls {
+            background: rgba(0, 0, 0, 0.8);
+            border: 1px solid #00d4ff;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 0 30px rgba(0, 212, 255, 0.3);
+            animation: pulse 3s infinite;
+        }
+        .input-group {
+            margin-bottom: 25px;
+            position: relative;
+        }
+        label {
+            display: block;
+            font-weight: bold;
+            color: #00d4ff;
+            margin-bottom: 8px;
+            font-size: 1.1em;
+        }
+        input[type="number"] {
+            width: 100%;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid #00d4ff;
+            border-radius: 8px;
+            color: #e0e0e0;
+            font-size: 1em;
+            transition: all 0.3s;
+        }
+        input[type="number"]:focus {
+            border-color: #ff007f;
+            box-shadow: 0 0 15px rgba(255, 0, 127, 0.5);
+            outline: none;
+        }
+        .result {
+            font-size: 1.4em;
+            font-weight: bold;
+            color: #00ff88;
+            text-align: center;
+            margin: 20px 0;
+            padding: 15px;
+            background: rgba(0, 255, 136, 0.1);
+            border: 1px solid #00ff88;
+            border-radius: 10px;
+            text-shadow: 0 0 10px #00ff88;
+        }
+        .chart-container {
+            background: rgba(0, 0, 0, 0.8);
+            border: 1px solid #00d4ff;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 0 30px rgba(0, 212, 255, 0.3);
+        }
+        #chart {
+            max-width: 100%;
+            height: 400px;
+        }
+        button {
+            background: linear-gradient(45deg, #00d4ff, #ff007f);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 25px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin: 10px 5px;
+            font-family: 'Orbitron', monospace;
+            position: relative;
+            overflow: hidden;
+        }
+        button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+        button:hover::before {
+            left: 100%;
+        }
+        button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 20px rgba(0, 212, 255, 0.5);
+        }
+        .exercise {
+            margin-top: 40px;
+            padding: 30px;
+            background: rgba(0, 0, 0, 0.8);
+            border: 1px solid #ff007f;
+            border-radius: 15px;
+            box-shadow: 0 0 30px rgba(255, 0, 127, 0.3);
+        }
+        .exercise h2 {
+            color: #ff007f;
+            text-shadow: 0 0 15px #ff007f;
+            margin-bottom: 20px;
+        }
+        #exerciseQuestion {
+            font-size: 1.1em;
+            margin-bottom: 15px;
+            color: #e0e0e0;
+        }
+        #feedback {
+            margin-top: 15px;
+            font-weight: bold;
+            padding: 10px;
+            border-radius: 5px;
+            text-shadow: 0 0 10px currentColor;
+        }
+        #challenge {
+            margin-top: 20px;
+            padding: 20px;
+            background: rgba(255, 193, 7, 0.1);
+            border: 1px solid #ffc107;
+            border-radius: 10px;
+            color: #ffc107;
+        }
+        @keyframes glow {
+            from { text-shadow: 0 0 20px #00d4ff, 0 0 40px #00d4ff; }
+            to { text-shadow: 0 0 30px #00d4ff, 0 0 60px #00d4ff; }
+        }
+        @keyframes pulse {
+            0%, 100% { box-shadow: 0 0 30px rgba(0, 212, 255, 0.3); }
+            50% { box-shadow: 0 0 50px rgba(0, 212, 255, 0.6); }
+        }
+        @media (max-width: 768px) {
+            .grid { grid-template-columns: 1fr; }
+            h1 { font-size: 2.5em; }
+            .container { padding: 20px; }
+        }
+        .icon {
+            margin-right: 10px;
+        }
     </style>
 </head>
 <body>
-    <h1>Simulasi Hukum Ohm: V = I * R</h1>
-    <p>Masukkan nilai tegangan (V) dan resistansi (R). Arus (I) akan dihitung otomatis.</p>
-    
-    <label>Tegangan (V): <input type="number" id="voltage" min="0" step="0.1" value="5"></label> V<br>
-    
-    <label>Resistansi (R): <input type="number" id="resistance" min="0.1" step="0.1" value="2"></label> Ω<br>
-    
-    <p>Arus (I): <span id="current">2.5</span> A</p>
-    
-    <canvas id="chart"></canvas>
-    
-    <button id="challengeBtn">Mode Tantangan (5 Soal Acak)</button>
-    <div id="challenge"></div>
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-bolt icon"></i>Simulasi Hukum Ohm: V = I * R</h1>
+            <p class="subtitle">Eksplorasi hubungan tegangan, arus, dan resistansi dengan simulasi interaktif futuristik.</p>
+        </div>
+        
+        <div class="grid">
+            <div class="controls">
+                <div class="input-group">
+                    <label for="voltage"><i class="fas fa-plug icon"></i>Tegangan (V):</label>
+                    <input type="number" id="voltage" min="0" step="0.1" value="5">
+                </div>
+                
+                <div class="input-group">
+                    <label for="resistance"><i class="fas fa-cogs icon"></i>Resistansi (R):</label>
+                    <input type="number" id="resistance" min="0.1" step="0.1" value="2">
+                </div>
+                
+                <div class="result"><i class="fas fa-chart-line icon"></i>Arus (I): <span id="current">2.5</span> A</div>
+                
+                <button id="challengeBtn"><i class="fas fa-brain icon"></i>Mode Tantangan (5 Soal Acak)</button>
+                <div id="challenge"></div>
+            </div>
+            
+            <div class="chart-container">
+                <canvas id="chart"></canvas>
+            </div>
+        </div>
+        
+        <div class="exercise">
+            <h2><i class="fas fa-question-circle icon"></i>Latihan Soal Acak</h2>
+            <p>Klik tombol di bawah untuk mendapatkan soal acak. Jawab dan cek jawabanmu!</p>
+            <button id="generateExercise"><i class="fas fa-random icon"></i>Generate Soal Acak</button>
+            <div id="exerciseQuestion"></div>
+            <label>Jawaban Anda (I dalam A): <input type="number" id="userAnswer" step="0.01"></label>
+            <button id="checkAnswer"><i class="fas fa-check icon"></i>Cek Jawaban</button>
+            <div id="feedback"></div>
+        </div>
+    </div>
     
     <script>
         const voltageInput = document.getElementById('voltage');
@@ -32,8 +231,14 @@
         const currentDisplay = document.getElementById('current');
         const challengeBtn = document.getElementById('challengeBtn');
         const challengeDiv = document.getElementById('challenge');
+        const generateExerciseBtn = document.getElementById('generateExercise');
+        const exerciseQuestionDiv = document.getElementById('exerciseQuestion');
+        const userAnswerInput = document.getElementById('userAnswer');
+        const checkAnswerBtn = document.getElementById('checkAnswer');
+        const feedbackDiv = document.getElementById('feedback');
         
         let chart;
+        let correctAnswer;
         
         function updateSimulation() {
             const V = parseFloat(voltageInput.value) || 0;
@@ -58,14 +263,26 @@
                     datasets: [{
                         label: 'I vs V (untuk R = ' + R.toFixed(1) + ' Ω)',
                         data: dataPoints,
-                        borderColor: 'blue',
-                        fill: false
+                        borderColor: '#00d4ff',
+                        backgroundColor: 'rgba(0, 212, 255, 0.1)',
+                        fill: false,
+                        tension: 0.1,
+                        pointBackgroundColor: '#ff007f',
+                        pointBorderColor: '#00d4ff'
                     }]
                 },
                 options: {
+                    responsive: true,
                     scales: {
-                        x: { title: { display: true, text: 'Tegangan (V)' } },
-                        y: { title: { display: true, text: 'Arus (I)' } }
+                        x: { title: { display: true, text: 'Tegangan (V)', color: '#e0e0e0' }, ticks: { color: '#e0e0e0' } },
+                        y: { title: { display: true, text: 'Arus (I)', color: '#e0e0e0' }, ticks: { color: '#e0e0e0' } }
+                    },
+                    animation: {
+                        duration: 1500,
+                        easing: 'easeInOutCubic'
+                    },
+                    plugins: {
+                        legend: { labels: { color: '#e0e0e0' } }
                     }
                 }
             });
@@ -86,6 +303,30 @@
             }
             challengeDiv.innerHTML = questions.join('<br>');
         });
+        
+        generateExerciseBtn.addEventListener('click', () => {
+            const V = Math.random() * 10;
+            const R = Math.random() * 10 + 1;
+            correctAnswer = V / R;
+            exerciseQuestionDiv.innerHTML = `Soal: Jika tegangan (V) = ${V.toFixed(1)} V dan resistansi (R) = ${R.toFixed(1)} Ω, berapa arus (I) dalam ampere?`;
+            userAnswerInput.value = '';
+            feedbackDiv.textContent = '';
+        });
+        
+        checkAnswerBtn.addEventListener('click', () => {
+            const userAns = parseFloat(userAnswerInput.value);
+            if (isNaN(userAns)) {
+                feedbackDiv.textContent = 'Masukkan jawaban numerik!';
+                feedbackDiv.style.color = 'red';
+            } else if (Math.abs(userAns - correctAnswer) < 0.01) {
+                feedbackDiv.textContent = `Benar! Jawaban yang tepat adalah ${correctAnswer.toFixed(2)} A.`;
+                feedbackDiv.style.color = 'green';
+            } else {
+                feedbackDiv.textContent = `Salah. Jawaban yang tepat adalah ${correctAnswer.toFixed(2)} A. Coba lagi!`;
+                feedbackDiv.style.color = 'red';
+            }
+        });
     </script>
 </body>
 </html>
+
